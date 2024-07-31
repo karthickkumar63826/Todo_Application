@@ -1,17 +1,14 @@
-import Realm from "realm";
+import Realm from 'realm';
 
+const TaskSchema = {
+  name: 'Task',
+  primaryKey: 'id',
+  properties: {
+    id: 'string',
+    text: 'string',
+    completed: 'bool',
+    tags: 'string[]',
+  },
+};
 
-class Task extends Realm.Object{}
-
-Task.schema = {
-    name: "Task",
-    primaryKey : 'id',
-    properties :{
-        id: 'string',
-        text: 'string',
-        completed : 'bool'
-    }
-}
-
-
-export default Task;
+export default TaskSchema;

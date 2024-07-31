@@ -1,14 +1,21 @@
-import React from 'react';
-import {View, Text, FlatList, StyleSheet, Pressable} from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, FlatList, StyleSheet, Pressable } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
+import { TaskContext } from './context/TaskContext';
 
-const DisplayTask = ({tasks, onEdit, onDelete, onToggleCompleted}) => {
-  const renderItem = ({item}) => (
+const DisplayTask = () => {
+  const { tasks, handleEdit, handleDelete, handleToggle, searchQuery } = useContext(TaskContext);
+
+  const filteredTasks = tasks.filter(task =>
+    task.text.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const renderItem = ({ item }) => (
     <View style={styles.taskItem}>
       <View style={styles.tasktext}>
         <CheckBox
           value={item.completed}
-          onValueChange={() => onToggleCompleted(item.id)}
+          onValueChange={() => handleToggle(item.id)}
           style={styles.checkBox}
         />
         <Text style={[styles.task, item.completed && styles.completedTask]}>
@@ -16,12 +23,12 @@ const DisplayTask = ({tasks, onEdit, onDelete, onToggleCompleted}) => {
         </Text> 
       </View>
       <View style={styles.functions}>
-        <Pressable style={styles.editButton} onPress={() => onEdit(item.id)}>
+        <Pressable style={styles.editButton} onPress={() => handleEdit(item.id)}>
           <Text style={styles.btnText}>Edit</Text>
         </Pressable>
         <Pressable
           style={styles.deleteButton}
-          onPress={() => onDelete(item.id)}>
+          onPress={() => handleDelete(item.id)}>
           <Text style={styles.btnText}>Delete</Text>
         </Pressable>
       </View>
@@ -31,7 +38,7 @@ const DisplayTask = ({tasks, onEdit, onDelete, onToggleCompleted}) => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={tasks}
+        data={filteredTasks}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
       />
@@ -67,17 +74,18 @@ const styles = StyleSheet.create({
   },
   completedTask: {
     textDecorationLine: 'line-through',
+    color: 'gray',
   },
   editButton: {
     borderWidth: 1,
-    borderColor: 'lightgreen',
-    padding: 10,
+    borderColor: "#007BFF",
+    padding: 5,
     borderRadius: 5,
   },
   deleteButton: {
-    borderWidth: 1,
     borderColor: 'red',
-    padding: 10,
+    borderWidth: 1,
+    padding: 5,
     borderRadius: 5,
   },
   btnText: {

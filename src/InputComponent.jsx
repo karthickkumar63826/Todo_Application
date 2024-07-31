@@ -1,126 +1,137 @@
-import React, {useEffect, useState} from 'react';
-import {Pressable, TextInput, View, Text, TouchableOpacity} from 'react-native';
-import {StyleSheet} from 'react-native';
-import DisplayTask from './DisplayTasks';
-import Realm from 'realm';
-import TaskSchema from '../database/TaskSchema';
+import React, {useState, useContext} from 'react';
+import {
+  TextInput,
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Pressable,
+} from 'react-native';
+import {TaskContext} from './context/TaskContext';
+
+const availableTags = [
+  'Personal Tasks',
+  'Do',
+  'Fiction',
+  ' perido Street Station - China Mie`ville',
+  'Reading',
+  'The Encylopedia of warefare',
+  'News & Artical',
+  'Tech',
+];
 
 const InputComponent = () => {
-  const [input, setInput] = useState('');
-  const [tasks, setTasks] = useState([]);
-  const [editingId, setEditingId] = useState(null);
+  const {tasks, handleTasks, input, setInput, tags, setTags} =
+    useContext(TaskContext);
+  const [isFocused, setIsFocused] = useState(false);
 
-  useEffect(() => {
-    const realm = new Realm({schema: [TaskSchema.schema]});
-    const tasks = realm.objects('Task');
-    setTasks(tasks.map(task => ({...task})));
-
-    return () => realm.close();
-  }, []);
-
-  const handleTasks = () => {
-    if (input.trim()) {
-      const realm = new Realm({schema: [TaskSchema.schema]});
-
-      realm.write(() => {
-        if (editingId) {
-          const task = realm.objectForPrimaryKey('Task', editingId);
-          task.text = input;
-          setEditingId(null);
-        } else {
-          realm.create('Task', {
-            id: Date.now().toString(),
-            text: input,
-            completed: false,
-          });
-        }
-      });
-      setTasks(realm.objects('Task').map(task => ({...task})));
-      setInput('');
-      realm.close();
-    }
+  const handleAddOrUpdateTask = () => {
+    handleTasks();
   };
 
-  const handleEdit = id => {
-    const realm = new Realm({schema: [TaskSchema.schema]});
-    let taskToEdit = realm.objectForPrimaryKey('Task', id);
-    setInput(taskToEdit.text);
-    setEditingId(id);
-    realm.close();
-  };
-
-  const handleDelete = id => {
-    const realm = new Realm({schema: [TaskSchema.schema]});
-
-    realm.write(() => {
-      let task = realm.objectForPrimaryKey('Task', id);
-      realm.delete(task);
+  const toggleTags = tag => {
+    setTags(prevTags => {
+      if (prevTags.includes(tag)) {
+        return prevTags.filter(t => t !== tag);
+      } else {
+        return [...prevTags, tag];
+      }
     });
-
-    setTasks(realm.objects('Task').map(task => ({...task})));
-    realm.close();
-  };
-
-  const handleToggle = id => {
-    const realm = new Realm({schema: [TaskSchema.schema]});
-
-    realm.write(() => {
-      let task = realm.objectForPrimaryKey('Task', id);
-      task.completed = !task.completed;
-    });
-
-    setTasks(realm.objects('Task').map(task => ({...task})));
-    realm.close();
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Enter your task ..."
-          value={input}
-          onChangeText={value => setInput(value)}
-        />
-        <TouchableOpacity style={styles.addButton} onPress={handleTasks}>
-          <Text style={styles.addButtonText}>Add</Text>
+      <View style={styles.innerContainer}>
+        <View style={styles.inputContainer}>
+          <View>
+            {!input && !isFocused && (
+              <Text style={styles.placeholder}>Task ...</Text>
+            )}
+            <TextInput
+              style={styles.textInput}
+              value={input}
+              onChangeText={value => setInput(value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+          </View>
+          <View style={styles.tagsView}>
+            {availableTags.map((tag, index) => (
+              <Pressable key={index} style={[styles.tag, tags.includes(tag) && styles.includesTag]} onPress={() => toggleTags(tag)}>
+                <Text style={styles.tagText}>{tag}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={handleAddOrUpdateTask}>
+          <Text style={styles.addButtonText}>Add Task</Text>
         </TouchableOpacity>
       </View>
-      <View>
-        <DisplayTask
-          tasks={tasks}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-          onToggleCompleted={handleToggle}
-        />
-      </View>
+      <View></View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  textInput: {
     flex: 1,
-    borderColor: '#ccc',
+    borderBottomWidth: 30,
+    borderColor: '#ff1122',
+    backgroundColor: '#0d0d05',
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+  innerContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+    marginTop: 50,
+  },
+  placeholder: {
+    marginTop: 30,
+    paddingLeft: 30,
+    fontSize: 30,
+    color: 'gray',
+  },
+
+  textInput: {
+    height: 80,
+    padding: 20,
+    fontSize: 30,
+    color: 'gray',
+  },
+
+  tagsView:{
+    gap: 10,
+    flexWrap:'wrap'
+  },
+  tag:{
+    borderRadius: 10,
     borderWidth: 1,
-    padding: 10,
-    marginRight: 10,
-    borderRadius: 5,
+    borderColor:'gray',
+    backgroundColor: 'lightGray',
+    padding:5,
+  },
+
+  includesTag:{
+    borderColor: '#ff5544'
+  },
+  tagText: {
+    color: 'gray',
   },
   addButton: {
-    backgroundColor: '#007BFF',
-    padding: 10,
+    backgroundColor: '#ff5544',
     borderRadius: 5,
+    alignItems: 'center',
+    padding: 10,
+    marginLeft: 20,
+    marginRight: 20,
   },
   addButtonText: {
     color: '#fff',
+    fontSize: 20,
+    fontWeight: '700',
   },
 });
 

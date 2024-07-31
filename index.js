@@ -1,9 +1,11 @@
-/**
- * @format
- */
-
-import {AppRegistry} from 'react-native';
+import { AppRegistry } from 'react-native';
+import { name as appName } from './app.json';
+import {TaskProvider} from './src/context/TaskContext'; 
 import App from './App';
-import {name as appName} from './app.json';
+const Root = () => (
+  <TaskProvider>
+    <App />
+  </TaskProvider>
+);
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => Root);
