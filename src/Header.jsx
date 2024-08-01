@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import SearchBar from './SearchBar';
-import {TaskContext} from './context/TaskContext';
+import {TaskContext} from './TaskContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Header = () => {

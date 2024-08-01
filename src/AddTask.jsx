@@ -1,26 +1,21 @@
-import React, {useState, useContext} from 'react';
-import {
-  View,
-  Pressable,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Pressable, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {TaskContext} from './context/TaskContext';
-import {TextInput} from 'react-native-gesture-handler';
-import {useNavigation} from '@react-navigation/native';
+import { TaskContext } from './TaskContext';
+import { TextInput } from 'react-native-gesture-handler';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-const CustomRadioButton = ({selected, onPress, color}) => {
+const CustomRadioButton = ({ selected, onPress, color }) => {
   return (
     <View style={styles.radioButtonContainer}>
       <TouchableOpacity
         style={[
           styles.radioButton,
-          {borderColor: color},
-          selected && {backgroundColor: color},
+          { borderColor: color },
+          selected && { backgroundColor: color },
         ]}
-        onPress={onPress}>
+        onPress={onPress}
+      >
         {selected && <View style={styles.radioButtonInner} />}
       </TouchableOpacity>
     </View>
@@ -28,9 +23,12 @@ const CustomRadioButton = ({selected, onPress, color}) => {
 };
 
 const AddTask = () => {
-  const {handleTasks, input, setInput} = useContext(TaskContext);
+  const { handleTasks, input, setInput } = useContext(TaskContext);
   const [selectedRadioIndex, setSelectedRadioIndex] = useState(null);
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const { selectedDate, selectedTime } = route.params || {};
 
   const handleSave = () => {
     handleTasks();
@@ -41,8 +39,12 @@ const AddTask = () => {
     setSelectedRadioIndex(index);
   };
 
-  const handleCalender = () => {
+  const handleCalendar = () => {
     navigation.navigate('Calendar');
+  };
+
+  const handleAddTags = () => {
+    navigation.navigate('AddTag');
   };
 
   const multiColorButtons = ['#fff', '#00b0fa', '#fae800', '#fa000d'];
@@ -62,9 +64,13 @@ const AddTask = () => {
         />
       </View>
       <View style={styles.functions}>
-        <Pressable style={styles.Day} onPress={handleCalender}>
+        <Pressable style={styles.Day} onPress={handleCalendar}>
           <Icon name="calendar-today" size={23} style={styles.dayIcon} />
-          <Text style={styles.repeatText}>No start date</Text>
+          <Text style={[styles.repeatText, selectedDate && styles.dayText]}>
+            {selectedDate || selectedTime
+              ? selectedDate + ' ' + selectedTime
+              : 'No start date'}
+          </Text>
         </Pressable>
         <View style={styles.Day}>
           <Icon name="schedule" size={23} style={styles.dayIcon} />
@@ -92,20 +98,16 @@ const AddTask = () => {
           <Icon name="location-on" size={23} style={styles.dayIcon} />
           <Text style={styles.repeatText}>Add location</Text>
         </View>
-        <View style={styles.Day}>
+        <Pressable style={styles.Day} onPress={handleAddTags}>
           <Icon name="label" size={23} style={styles.dayIcon} />
           <Text style={styles.repeatText}>Add tags</Text>
-        </View>
+        </Pressable>
         <View style={styles.Day}>
           <Icon name="notifications" size={23} style={styles.dayIcon} />
-          <Text style={styles.repeatText}>Add remainder</Text>
+          <Text style={styles.repeatText}>Add reminder</Text>
         </View>
         <View style={styles.Day}>
-          <Icon
-            name="subdirectory-arrow-right"
-            size={23}
-            style={styles.dayIcon}
-          />
+          <Icon name="subdirectory-arrow-right" size={23} style={styles.dayIcon} />
           <Text style={styles.repeatText}>Add subtask</Text>
         </View>
         <View style={styles.Day}>
@@ -124,6 +126,7 @@ const AddTask = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#1a1a1a',
   },
   innerContainer: {
     padding: 10,
@@ -137,7 +140,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: '#bbb',
   },
-
   functions: {
     flex: 1,
   },
@@ -174,16 +176,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 8,
   },
-  selectedRadioButton: {
-    backgroundColor: '#FF6347',
-  },
   radioButtonInner: {
     width: 15,
     height: 15,
     borderRadius: 7.5,
-  },
-  label: {
-    fontSize: 18,
   },
 });
 

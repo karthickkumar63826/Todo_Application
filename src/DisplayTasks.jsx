@@ -1,16 +1,17 @@
-import React, { useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, Pressable } from 'react-native';
+import React, {useContext} from 'react';
+import {View, Text, FlatList, StyleSheet, Pressable} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import { TaskContext } from './context/TaskContext';
+import {TaskContext} from './TaskContext';
 
 const DisplayTask = () => {
-  const { tasks, handleEdit, handleDelete, handleToggle, searchQuery } = useContext(TaskContext);
+  const {tasks, handleEdit, handleDelete, handleToggle, searchQuery} =
+    useContext(TaskContext);
 
   const filteredTasks = tasks.filter(task =>
-    task.text.toLowerCase().includes(searchQuery.toLowerCase())
+    task.text.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({item}) => (
     <View style={styles.taskItem}>
       <View style={styles.tasktext}>
         <CheckBox
@@ -20,10 +21,12 @@ const DisplayTask = () => {
         />
         <Text style={[styles.task, item.completed && styles.completedTask]}>
           {item.text}
-        </Text> 
+        </Text>
       </View>
       <View style={styles.functions}>
-        <Pressable style={styles.editButton} onPress={() => handleEdit(item.id)}>
+        <Pressable
+          style={styles.editButton}
+          onPress={() => handleEdit(item.id)}>
           <Text style={styles.btnText}>Edit</Text>
         </Pressable>
         <Pressable
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     borderWidth: 1,
-    borderColor: "#007BFF",
+    borderColor: '#007BFF',
     padding: 5,
     borderRadius: 5,
   },

@@ -1,86 +1,107 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, Pressable } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import React, {useState, useContext} from 'react';
+import {StyleSheet, View, Text, Pressable} from 'react-native';
+import DatePicker from 'react-native-modern-datepicker';
+import DateTime from './DateTime';
+import {useNavigation} from '@react-navigation/native';
 
 const MyCalendar = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[1]);
-  const [currentMonth, setCurrentMonth] = useState(new Date().toISOString().split('T')[0]);
+  const today = new Date().toISOString().split('T')[0];
+  const [date, setDate] = useState(today);
 
-  const onDayPress = (day) => {
-    setSelectedDate(day.dateString);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+
+  const navigation = useNavigation();
+
+  const handleDateChange = selectedDate => {
+    setDate(selectedDate);
   };
 
-  const onArrowPress = (direction) => {
-    const date = new Date(currentMonth);
-    if (direction === 'left') {
-      date.setMonth(date.getMonth() - 1);
-    } else {
-      date.setMonth(date.getMonth() + 1);
-    }
-    setCurrentMonth(date.toISOString().split('T')[0]);
+  const handleCancel = () => {
+    navigation.navigate('Input');
   };
 
-  const renderArrow = (direction) => {
-    return (
-      <Pressable style={styles.arrowContainer} onPress={() => onArrowPress(direction)}>
-        <Text style={styles.arrowText}>{direction === 'left' ? '<' : '>'}</Text>
-      </Pressable>
-    );
+  const handleOkay = () => {
+    const obj = {
+      date: selectedDate,
+      time: selectedTime,
+    };
+
+    console.log(obj);
+    navigation.navigate('Input', { selectedDate: selectedDate, selectedTime: selectedTime });
   };
 
   return (
-    <View style={styles.container}>
-      <Calendar
-        current={currentMonth}
-        onDayPress={onDayPress}
-        markedDates={{
-          [selectedDate]: {
-            selected: true,
-            disableTouchEvent: true,
-            selectedDotColor: 'orange',
-            customStyles: {
-              container: {
-                backgroundColor: 'lightorange',
-              },
-              text: {
-                color: '#fff',
-              },
-            },
-          },
-        }}
-        style={styles.calendar}
-        theme={{
-          calendarBackground: 'transparent',
-          selectedDayBackgroundColor: 'lightorange',
-          selectedDayTextColor: '#ffffff',
-          todayTextColor: '#ffffff',
-          arrowColor: 'transparent',
-          monthTextColor: '#ffffff',
-          textDayFontFamily: 'Arial',
-          textMonthFontFamily: 'Arial',
-          textDayHeaderFontFamily: 'Arial',
-        }}
-        renderArrow={direction => renderArrow(direction)}
-      />
+    <View style={styles.outerContainer}>
+      <View style={styles.dateContainer}>
+        <DateTime
+          date={date}
+          selectedDate={selectedDate}
+          selectedTime={selectedTime}
+          setSelectedDate={setSelectedDate}
+          setSelectedTime={setSelectedTime}
+        />
+      </View>
+      <View style={styles.container}>
+        <DatePicker
+          mode="calendar"
+          selected={date}
+          onDateChange={handleDateChange}
+          options={{
+            textHeaderColor: '#fff',
+            textDefaultColor: '#fff',
+            selectedTextColor: '#000',
+            mainColor: 'lightcoral',
+            textSecondaryColor: '#999',
+            backgroundColor: '#3b3a3a',
+          }}
+        />
+        <View style={styles.btnContainer}>
+          <Pressable onPress={handleCancel}>
+            <Text style={styles.btnText}>CANCEL</Text>
+          </Pressable>
+          <Pressable onPress={handleOkay}>
+            <Text style={styles.btnText}>OK</Text>
+          </Pressable>
+        </View>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#3b3a3a',
+    justifyContent: 'center',
+  },
+  dateContainer: {
+    margin: 20,
+  },
   container: {
     flex: 1,
     justifyContent: 'flex-end',
+    alignItems: 'center',
   },
-  calendar: {
-    borderWidth: 0,
+  selectedDate: {
+    fontSize: 18,
+    marginVertical: 20,
+  },
+  btnContainer: {
+    flex: 2,
     width: '100%',
-  },
-  arrowContainer: {
+    backgroundColor: '#222',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 30,
     padding: 10,
   },
-  arrowText: {
-    color: '#ffffff',
-    fontSize: 24,
+  btnText: {
+    fontSize: 15,
+    marginRight: 30,
+    fontWeight: '600',
+    color: 'lightcoral',
   },
 });
 

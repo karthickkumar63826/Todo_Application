@@ -8,6 +8,11 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 import AddTask from './src/AddTask';
 import MyCalendar from './src/CalenderComponent';
+import {
+  ModalSlideFromBottomIOS,
+  SlideFromRightIOS,
+} from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
+import AddTag from './src/AddTag';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +37,14 @@ const App = () => {
         <Stack.Screen
           name="Calendar"
           component={MyCalendar}
+          options={{
+            headerShown: false,
+            ...TransitionPresets.ModalSlideFromBottomIOS,
+          }}
+        />
+        <Stack.Screen
+          name="AddTag"
+          component={AddTag}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

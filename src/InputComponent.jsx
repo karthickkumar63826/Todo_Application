@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
-import {TaskContext} from './context/TaskContext';
+import {TaskContext} from './TaskContext';
 
 const availableTags = [
   'Personal Tasks',
@@ -57,7 +57,10 @@ const InputComponent = () => {
           </View>
           <View style={styles.tagsView}>
             {availableTags.map((tag, index) => (
-              <Pressable key={index} style={[styles.tag, tags.includes(tag) && styles.includesTag]} onPress={() => toggleTags(tag)}>
+              <Pressable
+                key={index}
+                style={[styles.tag, tags.includes(tag) && styles.includesTag]}
+                onPress={() => toggleTags(tag)}>
                 <Text style={styles.tagText}>{tag}</Text>
               </Pressable>
             ))}
@@ -101,20 +104,20 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
 
-  tagsView:{
+  tagsView: {
     gap: 10,
-    flexWrap:'wrap'
+    flexWrap: 'wrap',
   },
-  tag:{
+  tag: {
     borderRadius: 10,
     borderWidth: 1,
-    borderColor:'gray',
+    borderColor: 'gray',
     backgroundColor: 'lightGray',
-    padding:5,
+    padding: 5,
   },
 
-  includesTag:{
-    borderColor: '#ff5544'
+  includesTag: {
+    borderColor: '#ff5544',
   },
   tagText: {
     color: 'gray',
