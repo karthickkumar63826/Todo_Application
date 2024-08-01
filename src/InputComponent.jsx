@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     marginTop: 30,
-    paddingLeft: 30,
     fontSize: 30,
     color: 'gray',
   },

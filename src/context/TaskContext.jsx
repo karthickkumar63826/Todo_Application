@@ -1,10 +1,12 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, {createContext, useState, useEffect} from 'react';
 import Realm from 'realm';
-import TaskSchema from '../../database/TaskSchema'; 
+import TaskSchema from '../../database/TaskSchema';
 
 export const TaskContext = createContext();
 
-export const TaskProvider = ({ children }) => {
+let realm;
+
+export const TaskProvider = ({children}) => {
   const [tasks, setTasks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -13,7 +15,6 @@ export const TaskProvider = ({ children }) => {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    let realm;
     const openRealm = async () => {
       try {
         realm = await Realm.open({
@@ -24,7 +25,7 @@ export const TaskProvider = ({ children }) => {
               'Running migration from schema version',
               oldRealm.schemaVersion,
               'to',
-              newRealm.schemaVersion
+              newRealm.schemaVersion,
             );
             if (oldRealm.schemaVersion < 3) {
               const oldObjects = oldRealm.objects('Task');
@@ -42,13 +43,12 @@ export const TaskProvider = ({ children }) => {
 
         const tasks = realm.objects('Task');
         console.log('Fetched tasks:', tasks);
-        setTasks(tasks.map(task => ({ ...task })));
+        setTasks(tasks.map(task => ({...task})));
 
         tasks.addListener((collection, changes) => {
-          const updatedTasks = collection.map(task => ({ ...task }));
+          const updatedTasks = collection.map(task => ({...task}));
           setTasks(updatedTasks);
         });
-
       } catch (error) {
         console.error('Error opening Realm:', error);
       }
@@ -67,17 +67,13 @@ export const TaskProvider = ({ children }) => {
   const handleTasks = () => {
     if (input.trim()) {
       console.log('Handling tasks with input:', input);
-      const realm = new Realm({
-        schema: [TaskSchema],
-        schemaVersion: 3, 
-      });
 
       try {
         realm.write(() => {
           if (editingId) {
             console.log('Editing task with id:', editingId);
             const task = realm.objectForPrimaryKey('Task', editingId);
-            console.log(task)
+            console.log(task);
             if (task) {
               task.text = input;
               task.tags = tags;
@@ -96,25 +92,19 @@ export const TaskProvider = ({ children }) => {
           }
         });
 
-        const updatedTasks = realm.objects('Task').map(task => ({ ...task }));
+        const updatedTasks = realm.objects('Task').map(task => ({...task}));
         console.log('Updated tasks:', updatedTasks);
         setTasks(updatedTasks);
         setInput('');
         setTags([]);
       } catch (error) {
         console.error('Error handling tasks:', error);
-      } finally {
-        realm.close();
       }
     }
   };
 
   const handleEdit = id => {
     console.log('Editing task with id:', id);
-    const realm = new Realm({
-      schema: [TaskSchema],
-      schemaVersion: 3, 
-    });
 
     try {
       let taskToEdit = realm.objectForPrimaryKey('Task', id);
@@ -127,17 +117,11 @@ export const TaskProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Error editing task:', error);
-    } finally {
-      realm.close();
     }
   };
 
   const handleDelete = id => {
     console.log('Deleting task with id:', id);
-    const realm = new Realm({
-      schema: [TaskSchema],
-      schemaVersion: 3, 
-    });
 
     try {
       realm.write(() => {
@@ -149,22 +133,16 @@ export const TaskProvider = ({ children }) => {
         }
       });
 
-      const updatedTasks = realm.objects('Task').map(task => ({ ...task }));
+      const updatedTasks = realm.objects('Task').map(task => ({...task}));
       console.log('Tasks after deletion:', updatedTasks);
       setTasks(updatedTasks);
     } catch (error) {
       console.error('Error deleting task:', error);
-    } finally {
-      realm.close();
     }
   };
 
   const handleToggle = id => {
     console.log('Toggling task with id:', id);
-    const realm = new Realm({
-      schema: [TaskSchema],
-      schemaVersion: 3, 
-    });
 
     try {
       realm.write(() => {
@@ -176,13 +154,11 @@ export const TaskProvider = ({ children }) => {
         }
       });
 
-      const updatedTasks = realm.objects('Task').map(task => ({ ...task }));
+      const updatedTasks = realm.objects('Task').map(task => ({...task}));
       console.log('Tasks after toggle:', updatedTasks);
       setTasks(updatedTasks);
     } catch (error) {
       console.error('Error toggling task:', error);
-    } finally {
-      realm.close();
     }
   };
 
@@ -204,8 +180,7 @@ export const TaskProvider = ({ children }) => {
         setEditingId,
         tags,
         setTags,
-      }}
-    >
+      }}>
       {children}
     </TaskContext.Provider>
   );

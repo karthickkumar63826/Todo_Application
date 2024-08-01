@@ -3,10 +3,11 @@ import {View, StyleSheet, Pressable} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Header from './src/Header';
 import DisplayTask from './src/DisplayTasks';
-import InputComponent from './src/InputComponent';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
+import AddTask from './src/AddTask';
+import MyCalendar from './src/CalenderComponent';
 
 const Stack = createStackNavigator();
 
@@ -15,7 +16,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          ...TransitionPresets.FadeFromBottomAndroid,
+          ...TransitionPresets.SlideFromRightIOS,
           cardStyle: {backgroundColor: '#0d0d05'},
         }}>
         <Stack.Screen
@@ -25,7 +26,12 @@ const App = () => {
         />
         <Stack.Screen
           name="Input"
-          component={InputComponent}
+          component={AddTask}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Calendar"
+          component={MyCalendar}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
