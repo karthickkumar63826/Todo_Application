@@ -7,7 +7,7 @@ const TaskSchema = {
     id: 'string',
     text: 'string',
     completed: 'bool',
-    tags: 'string[]',
+    tags: {type: 'list', objectType: 'Tags'},
   },
 };
 

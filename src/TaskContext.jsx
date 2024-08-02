@@ -32,7 +32,7 @@ export const TaskProvider = ({children}) => {
     }
   }, [realm]);
 
-  const handleTasks = () => {
+  const handleTasks = (tagIds) => {
     if (realm && input.trim()) {
       try {
         realm.write(() => {
@@ -48,7 +48,7 @@ export const TaskProvider = ({children}) => {
               id: Date.now().toString(),
               text: input,
               completed: false,
-              tags: tags,
+              tags: tagIds.map(id => realm.objectForPrimaryKey('Tags', id)),
             });
           }
         });
@@ -57,6 +57,8 @@ export const TaskProvider = ({children}) => {
         setTasks(updatedTasks);
         setInput('');
         setTags([]);
+        setSelectedDate('');
+        setSelectedTime('');
       } catch (error) {
         console.error('Error handling tasks:', error);
       }

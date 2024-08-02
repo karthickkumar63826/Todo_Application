@@ -6,9 +6,9 @@ import TaskSchema from '../database/TaskSchema';
 
 const realmConfig = {
   schema: [TagSchema, TaskSchema],
-  schemaVersion: 8,
+  schemaVersion: 9,
   migration: (oldRealm, newRealm) => {
-    if (oldRealm.schemaVersion < 8) {
+    if (oldRealm.schemaVersion < 9) {
       const oldObjects = oldRealm.objects('Task');
       const newObjects = newRealm.objects('Task');
 

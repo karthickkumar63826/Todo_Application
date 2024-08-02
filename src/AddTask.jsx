@@ -1,21 +1,26 @@
-import React, { useState, useContext } from 'react';
-import { View, Pressable, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, {useState, useContext} from 'react';
+import {
+  View,
+  Pressable,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { TaskContext } from './TaskContext';
-import { TextInput } from 'react-native-gesture-handler';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {TaskContext} from './TaskContext';
+import {TextInput} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
 
-const CustomRadioButton = ({ selected, onPress, color }) => {
+const CustomRadioButton = ({selected, onPress, color}) => {
   return (
     <View style={styles.radioButtonContainer}>
       <TouchableOpacity
         style={[
           styles.radioButton,
-          { borderColor: color },
-          selected && { backgroundColor: color },
+          {borderColor: color},
+          selected && {backgroundColor: color},
         ]}
-        onPress={onPress}
-      >
+        onPress={onPress}>
         {selected && <View style={styles.radioButtonInner} />}
       </TouchableOpacity>
     </View>
@@ -23,13 +28,15 @@ const CustomRadioButton = ({ selected, onPress, color }) => {
 };
 
 const AddTask = () => {
-  const { handleTasks, input, setInput, selectedDate, selectedTime} = useContext(TaskContext);
+  const {handleTasks, input, setInput, selectedDate, selectedTime} =
+    useContext(TaskContext);
   const [selectedRadioIndex, setSelectedRadioIndex] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]);
   const navigation = useNavigation();
-  const route = useRoute();
 
   const handleSave = () => {
-    handleTasks();
+    const tagIds = selectedTags.map(tag => tag.id);
+    handleTasks(tagIds);
     navigation.navigate('Home');
   };
 
@@ -42,7 +49,9 @@ const AddTask = () => {
   };
 
   const handleAddTags = () => {
-    navigation.navigate('AddTag');
+    navigation.navigate('AddTag', {
+      onTagsSelected: tags => setSelectedTags(tags),
+    });
   };
 
   const multiColorButtons = ['#fff', '#00b0fa', '#fae800', '#fa000d'];
@@ -99,13 +108,26 @@ const AddTask = () => {
         <Pressable style={styles.Day} onPress={handleAddTags}>
           <Icon name="label" size={23} style={styles.dayIcon} />
           <Text style={styles.repeatText}>Add tags</Text>
+          {selectedTags.length > 0 && (
+            <View style={styles.selectedTagsContainer}>
+              {selectedTags.map(tag => (
+                <View key={tag.id} style={styles.selectedTag}>
+                  <Text style={styles.selectedTagText}>{tag.tag}</Text>
+                </View>
+              ))}
+            </View>
+          )}
         </Pressable>
         <View style={styles.Day}>
           <Icon name="notifications" size={23} style={styles.dayIcon} />
           <Text style={styles.repeatText}>Add reminder</Text>
         </View>
         <View style={styles.Day}>
-          <Icon name="subdirectory-arrow-right" size={23} style={styles.dayIcon} />
+          <Icon
+            name="subdirectory-arrow-right"
+            size={23}
+            style={styles.dayIcon}
+          />
           <Text style={styles.repeatText}>Add subtask</Text>
         </View>
         <View style={styles.Day}>
