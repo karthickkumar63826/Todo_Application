@@ -3,31 +3,40 @@ import {View, Text, FlatList, StyleSheet, Pressable} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {TaskContext} from './TaskContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation} from '@react-navigation/native';
 
 const DisplayTask = () => {
-  const {tasks, handleEdit, handleDelete, handleToggle, searchQuery} =
+  const {tasks, handleEdit, handleToggle, searchQuery} =
     useContext(TaskContext);
+
+  const navigation = useNavigation();
 
   const filteredTasks = tasks.filter(task =>
     task.text.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
+  const handleEditTask = id => {
+    handleEdit(id);
+    navigation.navigate('Input');
+  };
+
   const renderItem = ({item}) => (
     <View style={styles.taskItem}>
       <View style={styles.tasktext}>
         <View style={styles.taskInnertext}>
-        <CheckBox
-          value={item.completed}
-          onValueChange={() => handleToggle(item.id)}
-          style={styles.checkBox}
-        />
-        <Text style={[styles.task, item.completed && styles.completedTask]}>
-          {item.text}
-        </Text>
+          <CheckBox
+            value={item.completed}
+            onValueChange={() => handleToggle(item.id)}
+            style={styles.checkBox}
+          />
+          <Pressable onPress={() => handleEditTask(item.id)}>
+            <Text style={[styles.task, item.completed && styles.completedTask]}>
+              {item.text}
+            </Text>
+          </Pressable>
         </View>
-        <Text style={styles.task}>{item.date}</Text>
+        <Text style={styles.date}>{item.date}</Text>
       </View>
-
 
       <View style={styles.selectedTagsContainer}>
         {item.tags.map(tag => (
@@ -38,19 +47,6 @@ const DisplayTask = () => {
           </View>
         ))}
       </View>
-      <View style={styles.functions}>
-        <Pressable
-          style={styles.editButton}
-          onPress={() => handleEdit(item.id)}>
-          <Text style={styles.btnText}>Edit</Text>
-        </Pressable>
-        <Pressable
-          style={styles.deleteButton}
-          onPress={() => handleDelete(item.id)}>
-          <Text style={styles.btnText}>Delete</Text>
-        </Pressable>
-      </View>
-      <View></View>
     </View>
   );
 
@@ -71,9 +67,10 @@ const styles = StyleSheet.create({
   },
   taskItem: {
     flexDirection: 'column',
-    padding: 10,
+    padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: 'gray',
+    borderBottomColor: '#ff5544',
+    marginBottom: 20,
   },
   functions: {
     flexDirection: 'row',
@@ -83,9 +80,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    justifyContent: "space-between"
+    justifyContent: 'space-between',
   },
-  taskInnertext:{
+  taskInnertext: {
     flexDirection: 'row',
     gap: 10,
   },
@@ -93,6 +90,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
+  },
+  date: {
+    fontSize: 12,
+    color: '#ff5544',
+    paddingBottom: 7,
   },
   checkBox: {
     marginRight: 10,
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     borderWidth: 1,
-    borderColor: '#007BFF',
+    borderColor: '#',
     padding: 5,
     borderRadius: 5,
   },
@@ -126,6 +128,7 @@ const styles = StyleSheet.create({
   },
   selectedTagText: {
     color: 'white',
+    fontSize: 13,
     marginRight: 10,
   },
   selectedTagsContainer: {

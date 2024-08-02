@@ -14,6 +14,7 @@ export const TaskProvider = ({children}) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
 
+
   useEffect(() => {
     if (realm) {
       const tasksCollection = realm.objects('Task');
@@ -94,6 +95,8 @@ export const TaskProvider = ({children}) => {
 
         const updatedTasks = realm.objects('Task').map(task => ({...task}));
         setTasks(updatedTasks);
+        setEditingId('');
+        setInput('');
       } catch (error) {
         console.error('Error deleting task:', error);
       }

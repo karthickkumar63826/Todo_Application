@@ -28,8 +28,15 @@ const CustomRadioButton = ({selected, onPress, color}) => {
 };
 
 const AddTask = () => {
-  const {handleTasks, input, setInput, selectedDate, selectedTime} =
-    useContext(TaskContext);
+  const {
+    handleTasks,
+    input,
+    setInput,
+    selectedDate,
+    selectedTime,
+    editingId,
+    handleDelete,
+  } = useContext(TaskContext);
   const [selectedRadioIndex, setSelectedRadioIndex] = useState(null);
   const [selectedTags, setSelectedTags] = useState([]);
   const navigation = useNavigation();
@@ -54,14 +61,28 @@ const AddTask = () => {
     });
   };
 
+  const handleDeleteTask = id => {
+    handleDelete(id);
+    navigation.goBack();
+  };
+
   const multiColorButtons = ['#fff', '#00b0fa', '#fae800', '#fa000d'];
 
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <Pressable onPress={handleSave} style={styles.saveTask}>
-          <Icon name="save" size={26} style={styles.selectedTagText}/>
-        </Pressable>
+        <View style={styles.iconContainer}>
+          <Pressable onPress={handleSave} style={styles.saveTask}>
+            <Icon name="save" size={26} style={styles.selectedTagText} />
+          </Pressable>
+          {editingId && (
+            <Pressable
+              onPress={() => handleDeleteTask(editingId)}
+              style={styles.saveTask}>
+              <Icon name="delete" size={26} style={styles.selectedTagText} />
+            </Pressable>
+          )}
+        </View>
         <TextInput
           style={styles.TextInput}
           value={input}
@@ -114,11 +135,14 @@ const AddTask = () => {
             <View style={styles.selectedTagsContainer}>
               {selectedTags.map(tag => (
                 <View key={tag.id} style={styles.selectedTag}>
-                  <Icon name="label" size={20} style={styles.selectedTagText}/>
+                  <Icon name="label" size={20} style={styles.selectedTagText} />
 
                   <Text style={styles.selectedTagText}>{tag.tag}</Text>
-                  <Icon name="cancel" size={20} style={styles.selectedTagText} />
-
+                  <Icon
+                    name="cancel"
+                    size={20}
+                    style={styles.selectedTagText}
+                  />
                 </View>
               ))}
             </View>
@@ -157,6 +181,10 @@ const styles = StyleSheet.create({
   innerContainer: {
     padding: 10,
     marginBottom: 10,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   saveTask: {
     paddingLeft: 2,
@@ -207,22 +235,22 @@ const styles = StyleSheet.create({
     height: 15,
     borderRadius: 7.5,
   },
-  selectedTagsContainer:{
+  selectedTagsContainer: {
     flexDirection: 'row',
-    flexWrap : 'wrap',
-    gap:10,
+    flexWrap: 'wrap',
+    gap: 10,
   },
-  selectedTag:{
+  selectedTag: {
     borderWidth: 1,
     borderColor: 'white',
-    padding:5,
+    padding: 5,
     flexDirection: 'row',
-    gap:4,
+    gap: 4,
     borderRadius: 20,
   },
   selectedTagText: {
     color: 'white',
-  }
+  },
 });
 
 export default AddTask;
