@@ -6,16 +6,16 @@ import TaskSchema from '../database/TaskSchema';
 
 const realmConfig = {
   schema: [TagSchema, TaskSchema],
-  schemaVersion: 9,
+  schemaVersion: 10,
   migration: (oldRealm, newRealm) => {
-    if (oldRealm.schemaVersion < 9) {
+    if (oldRealm.schemaVersion < 10) {
       const oldObjects = oldRealm.objects('Task');
       const newObjects = newRealm.objects('Task');
 
       for (let i = 0; i < oldObjects.length; i++) {
         const oldObject = oldObjects[i];
         const newObject = newObjects[i];
-        newObject.tags = oldObject.tags || [];
+        newObject.date = oldObject.date || [];
       }
     }
   },

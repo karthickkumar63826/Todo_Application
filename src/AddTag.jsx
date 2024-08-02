@@ -63,7 +63,7 @@ const AddTag = () => {
     return (
       <View style={styles.tag}>
         <View style={styles.innerTag}>
-          <Icon name="label" size={25} />
+          <Icon name="label" size={25} style={{color: "white"}}/>
           <Text style={styles.tagText}>{item.tag}</Text>
         </View>
         <CheckBox
@@ -79,7 +79,7 @@ const AddTag = () => {
       <View style={styles.innerContainer}>
         <View style={styles.inputContainer}>
           <Pressable style={styles.backBtn} onPress={handleSaveTags}>
-            <Icon name="arrow-back" size={25} />
+            <Icon name="arrow-back" size={25} style={{color: "white"}}/>
           </Pressable>
           <TextInput
             value={input}
@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   tagText: {
+    color:"white",
     fontSize: 17,
   },
 });

@@ -36,7 +36,7 @@ const AddTask = () => {
 
   const handleSave = () => {
     const tagIds = selectedTags.map(tag => tag.id);
-    handleTasks(tagIds);
+    handleTasks(tagIds, selectedDate);
     navigation.navigate('Home');
   };
 
@@ -60,7 +60,7 @@ const AddTask = () => {
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <Pressable onPress={handleSave} style={styles.saveTask}>
-          <Icon name="save" size={26} />
+          <Icon name="save" size={26} style={styles.selectedTagText}/>
         </Pressable>
         <TextInput
           style={styles.TextInput}
@@ -107,12 +107,18 @@ const AddTask = () => {
         </View>
         <Pressable style={styles.Day} onPress={handleAddTags}>
           <Icon name="label" size={23} style={styles.dayIcon} />
-          <Text style={styles.repeatText}>Add tags</Text>
-          {selectedTags.length > 0 && (
+
+          {!selectedTags.length > 0 ? (
+            <Text style={styles.repeatText}>Add tags</Text>
+          ) : (
             <View style={styles.selectedTagsContainer}>
               {selectedTags.map(tag => (
                 <View key={tag.id} style={styles.selectedTag}>
+                  <Icon name="label" size={20} style={styles.selectedTagText}/>
+
                   <Text style={styles.selectedTagText}>{tag.tag}</Text>
+                  <Icon name="cancel" size={20} style={styles.selectedTagText} />
+
                 </View>
               ))}
             </View>
@@ -201,6 +207,22 @@ const styles = StyleSheet.create({
     height: 15,
     borderRadius: 7.5,
   },
+  selectedTagsContainer:{
+    flexDirection: 'row',
+    flexWrap : 'wrap',
+    gap:10,
+  },
+  selectedTag:{
+    borderWidth: 1,
+    borderColor: 'white',
+    padding:5,
+    flexDirection: 'row',
+    gap:4,
+    borderRadius: 20,
+  },
+  selectedTagText: {
+    color: 'white',
+  }
 });
 
 export default AddTask;

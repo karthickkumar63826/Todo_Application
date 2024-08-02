@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import {View, Text, FlatList, StyleSheet, Pressable} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {TaskContext} from './TaskContext';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const DisplayTask = () => {
   const {tasks, handleEdit, handleDelete, handleToggle, searchQuery} =
@@ -14,6 +15,7 @@ const DisplayTask = () => {
   const renderItem = ({item}) => (
     <View style={styles.taskItem}>
       <View style={styles.tasktext}>
+        <View style={styles.taskInnertext}>
         <CheckBox
           value={item.completed}
           onValueChange={() => handleToggle(item.id)}
@@ -22,6 +24,19 @@ const DisplayTask = () => {
         <Text style={[styles.task, item.completed && styles.completedTask]}>
           {item.text}
         </Text>
+        </View>
+        <Text style={styles.task}>{item.date}</Text>
+      </View>
+
+
+      <View style={styles.selectedTagsContainer}>
+        {item.tags.map(tag => (
+          <View key={tag.id} style={styles.selectedTag}>
+            <Icon name="label" size={20} style={styles.selectedTagText} />
+
+            <Text style={styles.selectedTagText}>{tag.tag}</Text>
+          </View>
+        ))}
       </View>
       <View style={styles.functions}>
         <Pressable
@@ -35,6 +50,7 @@ const DisplayTask = () => {
           <Text style={styles.btnText}>Delete</Text>
         </Pressable>
       </View>
+      <View></View>
     </View>
   );
 
@@ -67,8 +83,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    justifyContent: "space-between"
+  },
+  taskInnertext:{
+    flexDirection: 'row',
+    gap: 10,
   },
   task: {
+    color: 'white',
     fontSize: 18,
     fontWeight: '600',
   },
@@ -93,6 +115,23 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: 'white',
+  },
+  selectedTag: {
+    borderWidth: 1,
+    borderColor: 'white',
+    padding: 5,
+    flexDirection: 'row',
+    gap: 5,
+    borderRadius: 20,
+  },
+  selectedTagText: {
+    color: 'white',
+    marginRight: 10,
+  },
+  selectedTagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
   },
 });
 

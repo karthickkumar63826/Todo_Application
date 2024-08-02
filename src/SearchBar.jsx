@@ -13,13 +13,14 @@ const SearchBar = () => {
         <TextInput
           style={styles.searchInput}
           placeholder="Search tasks..."
+          placeholderTextColor={"white"}
           value={searchQuery}
           onChangeText={setSearchQuery}
           onBlur={() => setIsFocused(false)}
           autoFocus
         />
       ) : (
-        <Icon name="search" size={22} onPress={() => setIsFocused(true)} />
+        <Icon name="search" size={22} onPress={() => setIsFocused(true)} style={{color: "white"}}/>
       )}
     </View>
   );
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   searchInput: {
+    color: "white",
     flex: 1,
     marginLeft: 20,
   },

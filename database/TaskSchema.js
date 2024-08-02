@@ -8,6 +8,7 @@ const TaskSchema = {
     text: 'string',
     completed: 'bool',
     tags: {type: 'list', objectType: 'Tags'},
+    date: 'string',
   },
 };
 

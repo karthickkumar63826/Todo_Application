@@ -32,7 +32,7 @@ export const TaskProvider = ({children}) => {
     }
   }, [realm]);
 
-  const handleTasks = (tagIds) => {
+  const handleTasks = (tagIds, selectedDate) => {
     if (realm && input.trim()) {
       try {
         realm.write(() => {
@@ -41,6 +41,7 @@ export const TaskProvider = ({children}) => {
             if (task) {
               task.text = input;
               task.tags = tags;
+              task.date = selectedDate;
               setEditingId(null);
             }
           } else {
@@ -49,6 +50,7 @@ export const TaskProvider = ({children}) => {
               text: input,
               completed: false,
               tags: tagIds.map(id => realm.objectForPrimaryKey('Tags', id)),
+              date: selectedDate,
             });
           }
         });
