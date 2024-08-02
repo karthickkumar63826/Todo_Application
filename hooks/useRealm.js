@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import Realm from 'realm';
 import TagSchema from '../database/TagSchema';
@@ -5,9 +6,9 @@ import TaskSchema from '../database/TaskSchema';
 
 const realmConfig = {
   schema: [TagSchema, TaskSchema],
-  schemaVersion: 5,
+  schemaVersion: 8,
   migration: (oldRealm, newRealm) => {
-    if (oldRealm.schemaVersion < 5) {
+    if (oldRealm.schemaVersion < 8) {
       const oldObjects = oldRealm.objects('Task');
       const newObjects = newRealm.objects('Task');
 
@@ -20,17 +21,18 @@ const realmConfig = {
   },
 };
 
+let realmInstance = null;
+
 export const useRealm = () => {
   const [realm, setRealm] = useState(null);
 
   useEffect(() => {
-    const realmInstance = new Realm(realmConfig);
+    if (!realmInstance) {
+      realmInstance = new Realm(realmConfig);
+    }
     setRealm(realmInstance);
 
     return () => {
-      if (realmInstance && !realmInstance.isClosed) {
-        realmInstance.close();
-      }
     };
   }, []);
 

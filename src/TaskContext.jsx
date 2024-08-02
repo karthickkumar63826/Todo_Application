@@ -1,9 +1,9 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { useRealm } from '../hooks/useRealm';
+import React, {createContext, useState, useEffect} from 'react';
+import {useRealm} from '../hooks/useRealm';
 
 export const TaskContext = createContext();
 
-export const TaskProvider = ({ children }) => {
+export const TaskProvider = ({children}) => {
   const realm = useRealm();
   const [tasks, setTasks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -11,14 +11,16 @@ export const TaskProvider = ({ children }) => {
   const [input, setInput] = useState('');
   const [tags, setTags] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
 
   useEffect(() => {
     if (realm) {
       const tasksCollection = realm.objects('Task');
-      setTasks(tasksCollection.map(task => ({ ...task })));
+      setTasks(tasksCollection.map(task => ({...task})));
 
       tasksCollection.addListener((collection, changes) => {
-        const updatedTasks = collection.map(task => ({ ...task }));
+        const updatedTasks = collection.map(task => ({...task}));
         setTasks(updatedTasks);
       });
 
@@ -51,7 +53,7 @@ export const TaskProvider = ({ children }) => {
           }
         });
 
-        const updatedTasks = realm.objects('Task').map(task => ({ ...task }));
+        const updatedTasks = realm.objects('Task').map(task => ({...task}));
         setTasks(updatedTasks);
         setInput('');
         setTags([]);
@@ -86,7 +88,7 @@ export const TaskProvider = ({ children }) => {
           }
         });
 
-        const updatedTasks = realm.objects('Task').map(task => ({ ...task }));
+        const updatedTasks = realm.objects('Task').map(task => ({...task}));
         setTasks(updatedTasks);
       } catch (error) {
         console.error('Error deleting task:', error);
@@ -104,7 +106,7 @@ export const TaskProvider = ({ children }) => {
           }
         });
 
-        const updatedTasks = realm.objects('Task').map(task => ({ ...task }));
+        const updatedTasks = realm.objects('Task').map(task => ({...task}));
         setTasks(updatedTasks);
       } catch (error) {
         console.error('Error toggling task:', error);
@@ -130,8 +132,11 @@ export const TaskProvider = ({ children }) => {
         setEditingId,
         tags,
         setTags,
-      }}
-    >
+        selectedDate,
+        setSelectedDate,
+        selectedTime,
+        setSelectedTime,
+      }}>
       {children}
     </TaskContext.Provider>
   );

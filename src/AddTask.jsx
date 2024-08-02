@@ -23,12 +23,10 @@ const CustomRadioButton = ({ selected, onPress, color }) => {
 };
 
 const AddTask = () => {
-  const { handleTasks, input, setInput } = useContext(TaskContext);
+  const { handleTasks, input, setInput, selectedDate, selectedTime} = useContext(TaskContext);
   const [selectedRadioIndex, setSelectedRadioIndex] = useState(null);
   const navigation = useNavigation();
   const route = useRoute();
-
-  const { selectedDate, selectedTime } = route.params || {};
 
   const handleSave = () => {
     handleTasks();

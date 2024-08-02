@@ -1,16 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Pressable} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {TaskContext} from './TaskContext';
 
-const DateTime = ({
-  date,
-  selectedDate,
-  selectedTime,
-  setSelectedDate,
-  setSelectedTime,
-}) => {
+const DateTime = ({date}) => {
   const [mainDate, setMainDate] = useState('');
 
+  const {setSelectedDate, setSelectedTime, selectedDate, selectedTime} = useContext(TaskContext);
   const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {

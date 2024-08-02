@@ -8,8 +8,7 @@ const MyCalendar = () => {
   const today = new Date().toISOString().split('T')[0];
   const [date, setDate] = useState(today);
 
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
+
 
   const navigation = useNavigation();
 
@@ -22,13 +21,7 @@ const MyCalendar = () => {
   };
 
   const handleOkay = () => {
-    const obj = {
-      date: selectedDate,
-      time: selectedTime,
-    };
-
-    console.log(obj);
-    navigation.navigate('Input', { selectedDate: selectedDate, selectedTime: selectedTime });
+    navigation.navigate('Input');
   };
 
   return (
@@ -36,10 +29,6 @@ const MyCalendar = () => {
       <View style={styles.dateContainer}>
         <DateTime
           date={date}
-          selectedDate={selectedDate}
-          selectedTime={selectedTime}
-          setSelectedDate={setSelectedDate}
-          setSelectedTime={setSelectedTime}
         />
       </View>
       <View style={styles.container}>
